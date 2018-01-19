@@ -39,7 +39,7 @@ import ssid from './lists/ssid.vue'
 import frequencies from './lists/frequencies.vue'
 import ssiddialog from './ssiddialog/ssiddialog.vue'
 import chart from './chart/chart.vue'
-import webStorageGet from '@/util/webStorageGet.js'
+import webStorage from  '@/util/webStorage.js'
 
 let _this=null;
 
@@ -78,7 +78,7 @@ export default {
     },
     getGridDatas(){
       _this=this;
-      let ids=webStorageGet();
+      let ids=webStorage.getId();
       for(let i=0;i<ids.length;i++){
         let item={  //表格数据&校园网ssid
           SSID:ids[i],

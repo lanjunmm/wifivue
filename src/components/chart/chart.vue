@@ -1,21 +1,25 @@
 <template>
   <div id="echarts">
-    <!--<router-link to="/chart">获取</router-link>-->  <!--测试routerlink跳转页面-->
-    <div id="map" style="width: 2500px;height: 1500px"></div>
+    <!--<router-link to="/chart">获取</router-link>-->  <!--测试routerlink跳转页面2500px;height: 1500px-->
+    <div id="map" style="width: 1500px;height: 800px"></div>
   </div>
 </template>
 
 <script>
+  import {mapGetters, mapMutations, mapActions} from 'vuex'
+
   let _this=null;
 export default {
   mounted() {
     this.initChart();
     this.drawChart();
-    this.setOpt();
+//    this.mapssid();
+//    this.mapfre();//
   },
   created() {
-    this.$root.eventHub.$on('eventName',(data) => {
-      this.changeChart(data);
+    this.$root.eventHub.$on('eventName',(index) => {
+      console.log("event");
+      this.changeChart(index);
     });
   },
   name:'chart',
@@ -24,24 +28,32 @@ export default {
       echarts: require('echarts'),
       myChart:null,
       bmap:require('echarts/extension/bmap/bmap'),
+      mid:null,
+      schList:[],
+      freList:[],
+      mfreid:null
     }
   },
   computed:{
-    optData(){
-      return this.$store.state.optionData;
+    ...mapGetters([
+      'getWiFiList',
+      'getFreList'
+    ])
+  },
+  watch: {
+    getWiFiList: function(li) {
+//      this.schList=li;
+//      this.mapssid();
+    },
+    getFreList: function(li) {
+//      this.freqList=li;
+//      this.mapfre();
     }
   },
   methods:{
     initChart() { //初始化echarts容器
       _this=this;
       this.myChart = this.echarts.init(document.getElementById('map'));
-//    vue-resource发起http请求
-//    this.$http.post('http://127.0.0.1:3000/data').then(successCallback=>{
-//        console.log("http request success");
-//        console.log(successCallback);
-//      }, errorCallback=>{
-//        console.log("error",errorCallback);
-//      });
     },
     drawChart(){ //echarts图表的option设置，地图什么的
       _this = this;
@@ -81,17 +93,61 @@ export default {
       };
       _this .myChart.setOption(option,true);
     },
-    changeChart(point){
-//      console.log(point);
+    changeChart(index){
+      console.log("changeChart");
       let points=this.$store.state.optionData;
       var newOp=this.myChart.getOption();
       newOp.series[0].data=points;
-      this.myChart.setOption(newOp);
+      console.log("setOpt");
+      this.myChart.setOption(newOp);//这一句执行的特别久不知道为啥0.0
+      console.log("setOptDone");
     },
-    setOpt(){
-      //这里设置option，使用store中的数据，是否会自动更新
+    mapssid(){  //map，ssid与索引的对应,
+      if(this.schList.length==0){
+        this.schList=this.$store.state.wifiList;
+      }
+      var len=0;
+      this.mid = new Map();
+      _this=this;
+      this.schList.forEach(item=>{
+        _this.mid.set(item.name,len);
+        len++;
+      });
+    },
+    mapfre(){
+      if(this.freList.length==0){
+        this.freList=this.$store.state.freList;
+      }
+//      console.log(this.freList);
+      var len1=0;
+      this.mfreid = new Map();
+      _this=this;
+      this.freList.forEach(item=>{
+        let tmp=new Map();
+        let slen=0;
+        item.data.forEach(item1=>{
+          tmp.set(item1.name,slen);
+          slen++;
+        });
+        _this.mfreid.set(item.frequency,tmp);
+        slen++;
+      });
+//      console.log(this.mfreid);
+    },
+    getSchDataById(id){
+      console.log(this.schList);
+      let index=_this.mid.get(id);
+      let datas=this.schList[index].data;
+      return datas;
+    },
+    getFreDataById(id){
+      let index1=_this.mfreid.get(id[0]);//fre
+      let index2=idmap.get(id[1]);//ssid
+      let fre=this.freList[index1].data;
+      let coor=fre[index2].coor;
+      console.log(fre[index2].name);
+      return coor;
     }
-
   }
 }
 </script>

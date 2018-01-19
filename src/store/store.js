@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import webStorageGet from '@/util/webStorageGet.js'
+import webStorage from '@/util/webStorage.js'
 
 Vue.use(Vuex);
 
@@ -22,7 +22,7 @@ const mutations={
     state.existSSID[item]=false;
   },
   GET_GRIDDATA(state) {
-    let ids = webStorageGet();
+    let ids=webStorage.getId();
     for (let i = 0; i < ids.length; i++) {
       let item = {  //表格数据&校园网ssid
         SSID: ids[i],

@@ -29,12 +29,8 @@
 </template>
 
 <script>
-//  import ElMenu from "../../../node_modules/element-ui/packages/menu/src/menu.vue";
-//  import ElSubmenu from "../../../node_modules/element-ui/packages/menu/src/submenu.vue";
-//  import ElMenuItemGroup from "../../../node_modules/element-ui/packages/menu/src/menu-item-group.vue";
-//  import ElMenuItem from "../../../node_modules/element-ui/packages/menu/src/menu-item.vue";
   import reqServer from '@/util/reqServer'
-  import webStorageGet from '@/util/webStorageGet.js'
+  import webStorage from '@/util/webStorage.js'
   import {mapGetters, mapMutations, mapActions} from 'vuex'
   import $ from 'jquery'
 
@@ -48,8 +44,8 @@
  },
     name:'ssid',
     mounted(){
-      this.getAllId2();
       this.getSchList();
+      this.getAllId2();
 //      this.setList();
     },
     data(){
@@ -82,7 +78,8 @@
     methods:{
       getSchList(){
         _this=this;
-        let ids=webStorageGet();
+//        let ids=webStorageGet();
+        let ids=webStorage.getId();
         for(let i=0;i<ids.length;i++){
           let item={  //表格数据&校园网ssid
             SSID:ids[i],
@@ -137,8 +134,7 @@
         console.log(allData[idx].SSID);
         let data=allData[idx].data;
         this.$store.dispatch("updata_optdata",data); //更改state中的optionData
-        this.$root.eventHub.$emit('eventName',idx); //eventhub 可以直接传递参数'hello'改为data
-//        console.log(this.$store.state.optionData);
+        this.$root.eventHub.$emit('eventName',idx); //eventhub 可以直接传递参数idx改为data  allData[idx].SSID
       }
     }
   }

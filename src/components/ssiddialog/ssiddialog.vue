@@ -34,9 +34,7 @@
 
 <script>
 //  import ElTable from "../../../node_modules/element-ui/packages/table/src/table.vue";
-import webStorageGet from '@/util/webStorageGet.js'
-import webStorageDel from '@/util/webStorageDel.js'
-import webStorageSet from '@/util/webStorageSet.js'
+import webStorage from '@/util/webStorage.js'
 
   var _this=null;
   export default {
@@ -61,7 +59,8 @@ import webStorageSet from '@/util/webStorageSet.js'
     methods:{
       deleteRowId(index, rows) {//删除表格web存储id，删除表格行，将已存在标记置为false
         let delId=rows[index].SSID;
-        webStorageDel(delId);
+//        webStorageDel(delId);
+        webStorage.deleteId(delId);
         this.$store.dispatch("deleteSchId",delId);
         rows.splice(index, 1);
       },
@@ -69,7 +68,8 @@ import webStorageSet from '@/util/webStorageSet.js'
         _this=this;
         _this.$emit("closeDia");
         if(!_this.$store.state.existSSID[_this.form.name]){
-          webStorageSet(_this.form.name);
+//          webStorageSet(_this.form.name);
+          webStorage.setId(_this.form.name);
           let item={  //表格数据
             SSID:_this.form.name,
           };
